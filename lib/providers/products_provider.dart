@@ -45,26 +45,13 @@ class ProductProvider with ChangeNotifier {
     Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
     Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
     Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'),
-    Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'),
   ];
+
+  void fetchMoreProducts() {
+    _products.add(Product(image: 'assets/images/shoes1.jpg', name: 'Sapato'));
+    _products.add(Product(image: 'assets/images/shoes2.jpg', name: 'Sapato'));
+    notifyListeners();
+  }
 
   void setSelectedProductIndex(int index) {
     _selectedProductIndex = index;
