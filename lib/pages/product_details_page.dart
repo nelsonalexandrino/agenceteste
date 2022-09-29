@@ -55,8 +55,6 @@ class _ProductsDetailsState extends State<ProductsDetails> {
       setState(() {
         _markers.add(marker);
       });
-      debugPrint(position.altitude.toString());
-      debugPrint(position.longitude.toString());
     });
   }
 

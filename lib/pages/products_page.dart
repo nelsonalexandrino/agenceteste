@@ -4,7 +4,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:animations/animations.dart';
 
-import '../pages/details_page.dart';
+import 'product_details_page.dart';
 import '../widgets/product_item.dart';
 import '../providers/products_provider.dart';
 
@@ -34,7 +34,7 @@ class _ProductsPageState extends State<ProductsPage> {
   _onScroll() {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
-      print('O que?????');
+      debugPrint('O que?????');
       context.read<ProductProvider>().fetchMoreProducts();
     }
   }

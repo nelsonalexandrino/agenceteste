@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import '../providers/login_provider.dart';
 import '../pages/products_page.dart';
 import '../widgets/custom_textfield.dart';
 
@@ -16,9 +19,6 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
-  bool _isLoading = false;
-  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +81,52 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 children: [
                   Expanded(
-                      child: ElevatedButton(
-                    child: const Text('Google'),
-                    onPressed: () {},
-                  )),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(elevation: 0),
+                      onPressed: () {
+                        context
+                            .read<LoginProvider>()
+                            .signWithGoogle()
+                            .then((value) {
+                          debugPrint('value: $value');
+                          if (value) {
+                            Navigator.pushReplacementNamed(
+                                context, ProductsPage.routeName);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Não fez o login')));
+                          }
+                        });
+                      },
+                      child: const Text('Google'),
+                    ),
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
                   Expanded(
-                      child: ElevatedButton(
-                    child: const Text('Facebook'),
-                    onPressed: () {},
-                  )),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(elevation: 0),
+                      onPressed: () {
+                        context
+                            .read<LoginProvider>()
+                            .signWithFacebook()
+                            .then((value) {
+                          debugPrint('value: $value');
+                          if (value) {
+                            Navigator.pushReplacementNamed(
+                                context, ProductsPage.routeName);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Não fez o login')));
+                          }
+                        });
+                      },
+                      child: const Text('Facebook'),
+                    ),
+                  ),
                 ],
               ),
             ],
