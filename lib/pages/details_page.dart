@@ -1,9 +1,14 @@
-import 'package:agenceteste/providers/products_provider.dart';
+import 'dart:async';
+
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../pages/products_page.dart';
+import '../providers/products_provider.dart';
 
 class ProductsDetails extends StatefulWidget {
   const ProductsDetails({super.key});
@@ -18,7 +23,9 @@ class _ProductsDetailsState extends State<ProductsDetails> {
 
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  final _markers = <Marker>[];
+
+  final LatLng _defaultLocation = const LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
@@ -29,13 +36,31 @@ class _ProductsDetailsState extends State<ProductsDetails> {
       permission = await Geolocator.requestPermission();
     }
 
-    Geolocator.getCurrentPosition().then((position) {
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((position) {
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            bearing: 0,
+            target: LatLng(position.latitude, position.longitude),
+            zoom: 11.0,
+          ),
+        ),
+      );
+
+      final marker = Marker(
+        markerId: const MarkerId('Localização'),
+        position: LatLng(position.latitude, position.longitude),
+      );
       setState(() {
-        print(position.altitude);
-        print(position.longitude);
+        _markers.add(marker);
       });
+      debugPrint(position.altitude.toString());
+      debugPrint(position.longitude.toString());
     });
   }
+
+  bool _accepted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +68,10 @@ class _ProductsDetailsState extends State<ProductsDetails> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
+        actions: [
+          IconButton(
+              onPressed: () {}, icon: const Icon(FluentIcons.cart_24_filled))
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -52,8 +81,10 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                 height: constraints.maxHeight / 3,
                 child: GoogleMap(
                   onMapCreated: _onMapCreated,
-                  initialCameraPosition:
-                      _myLocation ?? CameraPosition(target: _center, zoom: 11),
+                  myLocationButtonEnabled: false,
+                  markers: _markers.toSet(),
+                  initialCameraPosition: _myLocation ??
+                      CameraPosition(target: _defaultLocation, zoom: 11),
                 ),
               ),
               Consumer<ProductProvider>(builder: (context, provider, _) {
@@ -96,6 +127,131 @@ class _ProductsDetailsState extends State<ProductsDetails> {
             ],
           );
         },
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          height: 45,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ElevatedButton(
+              child: const Text('Comprar'),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isDismissible: false,
+                  builder: (context) {
+                    _accepted = false;
+                    return Container(
+                      color: Colors.white,
+                      height: 200,
+                      child: StatefulBuilder(
+                        builder: (context, changeState) => SafeArea(
+                          child: !_accepted
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 15, top: 10),
+                                          child: Text(
+                                            'Confirma',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall,
+                                          ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 15, top: 20),
+                                          child: Text(
+                                              'Por favor, confirme se deseja comprar'),
+                                        ),
+                                      ],
+                                    ),
+                                    if (!_accepted)
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Não'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              changeState(
+                                                  () => _accepted = true);
+                                            },
+                                            child: const Text('Sim'),
+                                          )
+                                        ],
+                                      )
+                                  ],
+                                )
+                              : Builder(
+                                  builder: (context) {
+                                    Timer(
+                                      const Duration(seconds: 3),
+                                      () {
+                                        Navigator.pushReplacementNamed(
+                                            context, ProductsPage.routeName);
+                                      },
+                                    );
+                                    return const Center(
+                                      child: Text(
+                                        'Compra feita com sucesso',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                // showDialog(
+                //   context: context,
+                //   barrierDismissible: false,
+                //   builder: (context) => AlertDialog(
+                //     title: const Text('Comprar?'),
+                //     content:
+                //         const Text('Por favor, confirme se deseja comprar'),
+                //     actions: !_accepted
+                //         ? [
+                //             TextButton(
+                //               onPressed: () {
+                //                 Navigator.pop(context);
+                //               },
+                //               child: const Text('Não'),
+                //             ),
+                //             TextButton(
+                //               onPressed: () {
+                //                 setState(() {
+                //                   _accepted = true;
+                //                 });
+                //               },
+                //               child: const Text('Sim'),
+                //             )
+                //           ]
+                //         : null,
+                //   ),
+                // );
+              }),
+        ),
       ),
     );
   }
