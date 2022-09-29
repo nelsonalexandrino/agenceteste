@@ -58,4 +58,9 @@ class LoginProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> logout() async {
+    instance.signOut();
+    return true;
+  }
 }

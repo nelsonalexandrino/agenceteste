@@ -1,3 +1,7 @@
+import 'package:agenceteste/pages/login_page.dart';
+import 'package:agenceteste/providers/login_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -111,11 +115,25 @@ class _ProductsPageState extends State<ProductsPage> {
                   ),
                 ],
               ),
-              ListTile(
-                title: const Text('Logout'),
-                leading: const Icon(FluentIcons.sign_out_24_filled),
-                onTap: () {},
-              ),
+              Builder(builder: (context) {
+                return ListTile(
+                  title: const Text('Logout'),
+                  leading: const Icon(FluentIcons.sign_out_24_filled),
+                  onTap: () {
+                    if (FirebaseAuth.instance.currentUser != null) {
+                      context.read<LoginProvider>().logout().then((value) {
+                        Navigator.pushReplacementNamed(
+                            context, LoginPage.routeName);
+                      });
+                    } else {
+                      Scaffold.of(context).closeDrawer();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content:
+                              Text('Não fez login pelo Google ou Facebook')));
+                    }
+                  },
+                );
+              }),
             ],
           ),
         ),
