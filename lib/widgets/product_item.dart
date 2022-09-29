@@ -2,13 +2,23 @@ import 'package:agenceteste/models/product.dart';
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key, required this.product});
+  const ProductItem({super.key, required this.product, required this.index});
 
   final Product product;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 20.0,
+          ),
+        ],
+      ),
       child: Stack(children: [
         Padding(
           padding: const EdgeInsets.all(15),
@@ -31,7 +41,7 @@ class ProductItem extends StatelessWidget {
                   bottomLeft: Radius.circular(4),
                   bottomRight: Radius.circular(4),
                 )),
-            child: Text(product.name),
+            child: Text('${product.name} ${index + 1}'),
           ),
         )
       ]),

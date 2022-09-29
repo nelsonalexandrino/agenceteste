@@ -15,6 +15,7 @@ class ProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         title: const Text('Produtos'),
@@ -23,13 +24,18 @@ class ProductsPage extends StatelessWidget {
         var products = provider.products;
         return GridView.count(
           crossAxisCount: 2,
+          padding: const EdgeInsets.all(10),
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
           children: List.generate(
             products.length,
             (index) => OpenContainer(
-              closedBuilder: (context, action) => ProductItem(
-                product: products.elementAt(index),
-              ),
-              openBuilder: (context, action) => ProductsDetails(),
+              closedBuilder: (context, action) =>
+                  ProductItem(product: products.elementAt(index), index: index),
+              openBuilder: (context, action) {
+                context.read<ProductProvider>().setSelectedProductIndex(index);
+                return const ProductsDetails();
+              },
             ),
           ),
         );
