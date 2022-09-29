@@ -119,8 +119,10 @@ class _LoginPageState extends State<LoginPage> {
                                 context, ProductsPage.routeName);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Não fez o login')));
+                              const SnackBar(
+                                content: Text('Não fez o login'),
+                              ),
+                            );
                           }
                         });
                       },
