@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../pages/products_page.dart';
 import '../widgets/custom_textfield.dart';
 
 class LoginPage extends StatefulWidget {
@@ -52,17 +53,48 @@ class _LoginPageState extends State<LoginPage> {
                 controller: passwordController,
                 hintText: 'Senha',
               ),
-              const SizedBox(
-                height: 20,
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                  child: const Text('Esqueci a senha'),
+                ),
               ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(elevation: 0),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                        context, ProductsPage.routeName);
+                  },
                   child: const Text('Entrar'),
                 ),
-              )
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                'Ou',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              const SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                      child: ElevatedButton(
+                    child: const Text('Google'),
+                    onPressed: () {},
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: ElevatedButton(
+                    child: const Text('Facebook'),
+                    onPressed: () {},
+                  )),
+                ],
+              ),
             ],
           ),
         ),
